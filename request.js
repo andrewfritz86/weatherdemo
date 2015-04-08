@@ -11,7 +11,7 @@ app.get('/', function (req, res) {
   res.send('VELCOME TO ZEE WEATHER');
 });
 
-app.get('/:city/:state', function(req,res){
+app.get('/forecast/:city/:state', function(req,res){
     var city = req.params.city
     var state = req.params.state
     var url = "http://api.wunderground.com/api/"+colbysKey+"/conditions/q/"+ state + "/" +city+".json"
@@ -48,17 +48,14 @@ app.get('/breakdown/:city/:state', function(req,res){
     var state = req.params.state
     var url = "http://api.wunderground.com/api/"+colbysKey+"/hourly/q/"+ state + "/" +city+".json"
     request(url, function(error,response,body){
-        console.log(body)
         var parsed = JSON.parse(body);
         var arrayOfForecasts = []
         parsed.hourly_forecast.forEach(function(e){
-            console.log(e)
             var newObject = {time: e.FCTTIME.pretty, temp: e.temp.english};
             arrayOfForecasts.push(newObject);
         })
         var template = fs.readFileSync('./template.html', 'utf8');
         var html = mustache.render(template, {forecasts: arrayOfForecasts});
-        console.log(arrayOfForecasts);
         res.send(html);
     })
 

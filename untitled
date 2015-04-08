@@ -1,9 +1,7 @@
 var request = require("request");
 var colbysKey = "49807b9f8418a122";
 var express = require("express");
-var fs = require("fs");
-var mustache = require("mustache");
-var linkHome = "<a href='/'> home </a>";
+var linkHome = "<a href='/'> home </a>"
 
 var app = express();
 
@@ -25,7 +23,7 @@ app.get('/:city/:state', function(req,res){
     });
 });
 
-app.get('/forecast/:city/:state/:hour', function(req,res){
+app.get('/:city/:state/:hour', function(req,res){
     var city = req.params.city
     var state = req.params.state
     var hour = req.params.hour
@@ -38,32 +36,10 @@ app.get('/forecast/:city/:state/:hour', function(req,res){
                 temp = e.temp.english
             }
         })
-        res.send("<span> The temp in " + city + " is " +temp + "degrees </span>" + linkHome)
+        res.send("<span> The temp in " + city + " is " +temp + "degrees </span>")
     })
 
 });
-
-app.get('/breakdown/:city/:state', function(req,res){
-    var city = req.params.city
-    var state = req.params.state
-    var url = "http://api.wunderground.com/api/"+colbysKey+"/hourly/q/"+ state + "/" +city+".json"
-    request(url, function(error,response,body){
-        console.log(body)
-        var parsed = JSON.parse(body);
-        var arrayOfForecasts = []
-        parsed.hourly_forecast.forEach(function(e){
-            console.log(e)
-            var newObject = {time: e.FCTTIME.pretty, temp: e.temp.english};
-            arrayOfForecasts.push(newObject);
-        })
-        var template = fs.readFileSync('./template.html', 'utf8');
-        var html = mustache.render(template, {forecasts: arrayOfForecasts});
-        console.log(arrayOfForecasts);
-        res.send(html);
-    })
-
-});
-
 
 
 

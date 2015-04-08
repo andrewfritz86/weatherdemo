@@ -8,8 +8,21 @@ var linkHome = "<a href='/'> home </a>";
 var app = express();
 
 app.get('/', function (req, res) {
-  res.send('VELCOME TO ZEE WEATHER');
+    var html = fs.readFileSync('./index.html', 'utf8');
+  res.send(html);
 });
+
+app.get('/formcast', function(req, res){
+    var state = req.query.state;
+    var city = req.query.city;
+    var url = "http://api.wunderground.com/api/"+colbysKey+"/conditions/q/"+ state + "/" +city+".json";
+    request(url, function(err, response, body){
+        var parsed = JSON.parse(body);
+        var temp = parsed.current_observation.temp_f.toString();
+        res.send("<h1> in " +city+ " "+ state + " the temp is " + temp + "</h1>")
+    })
+
+})
 
 app.get('/forecast/:city/:state', function(req,res){
     var city = req.params.city

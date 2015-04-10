@@ -7,7 +7,7 @@ var linkHome = "<a href='/'> home </a>";
 
 var app = express();
 
-app.get('/', function (req, res) {
+app.get('/', function(req, res) {
     var html = fs.readFileSync('./index.html', 'utf8');
   res.send(html);
 });
